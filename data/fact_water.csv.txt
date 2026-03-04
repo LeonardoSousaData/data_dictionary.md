@@ -1,0 +1,6 @@
+fiscal_year,water_withdrawn_m3,water_consumed_m3,method_flag,source_doc,source_locator,extraction_date
+FY20,7936000,4196000,pre_FY24,2025 Microsoft Environmental Sustainability Report,Water Table 5 p.37,2026-03-03
+FY21,8068000,4773000,pre_FY24,2025 Microsoft Environmental Sustainability Report,Water Table 5 p.37,2026-03-03
+FY22,10706000,6399000,pre_FY24,2025 Microsoft Environmental Sustainability Report,Water Table 5 p.37,2026-03-03
+FY23,12951000,7844000,pre_FY24,2025 Microsoft Environmental Sustainability Report,Water Table 5 p.37,2026-03-03
+FY24,10377000,5807000,FY24_updated_method,2025 Microsoft Environmental Sustainability Report,Water Table 5 p.37,2026-03-03
