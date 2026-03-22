@@ -1,0 +1,7 @@
+Insight analítico
+
+Entre FY20 e FY23, o uso absoluto de água aumentou tanto em retirada quanto em consumo, indicando maior pressão hídrica agregada ao longo do período. Em FY24, ambas as métricas recuam de forma visível, sugerindo melhora relativa do desempenho hídrico, embora a comparação deva considerar a atualização metodológica desse ano.
+
+Versão técnica
+
+O gráfico de volumes absolutos mostra crescimento contínuo de retirada e consumo de água entre FY20 e FY23, com reversão em FY24. A proximidade relativa entre as duas curvas é coerente com os valores observados no cycle consumption rate, indicando que uma parcela relevante da água retirada também é consumida no período analisado.
