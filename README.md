@@ -174,6 +174,15 @@ Fecha a análise com:
 
 **Objetivo da página:** transformar os resultados em síntese executiva e indicar possíveis evoluções do projeto.
 
+### Página 1 — ESG & Valor
+![Página 1 — ESG & Valor](Images/Dashboard_pag1.png)
+
+### Página 2 — Drivers Operacionais & Leitura Complementar
+![Página 2 — Drivers Operacionais & Leitura Complementar](Images/Dashboard_pag2.png)
+
+### Página 3 — Conclusões & Recomendações
+![Página 3 — Conclusões & Recomendações](Images/Dasboard_pag3.png)
+
 ---
 
 ## Principais Insights
