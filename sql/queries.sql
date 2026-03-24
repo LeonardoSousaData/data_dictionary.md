@@ -1,51 +1,165 @@
+/* =========================================================
+   PROJETO: Eficiência hídrica e governança ESG em data centers
+   ARQUIVO: queries.sql
+   OBJETIVO: validação, exploração e consulta analítica
+   ========================================================= */
+
 USE microsoft_water_finance;
 
--- 1) Contagem de linhas (sanidade)
-SELECT 'dim_fiscal_year' AS table_name, COUNT(*) AS rows_count FROM dim_fiscal_year
-UNION ALL
-SELECT 'fact_water', COUNT(*) FROM fact_water
-UNION ALL
-SELECT 'fact_financials', COUNT(*) FROM fact_financials
-UNION ALL
-SELECT 'fact_datacenter_efficiency', COUNT(*) FROM fact_datacenter_efficiency;
 
--- 2) Regra de qualidade: consumo <= retirada (deve retornar 0 linhas)
+/* =========================================================
+   1) CHECK GERAL DE ESTRUTURA
+   ========================================================= */
+SHOW TABLES;
+SHOW FULL TABLES;
+
+
+/* =========================================================
+   2) CONTAGEM DE REGISTROS
+   ========================================================= */
+SELECT COUNT(*) AS qtd_dim FROM dim_fiscal_year;
+SELECT COUNT(*) AS qtd_water FROM fact_water;
+SELECT COUNT(*) AS qtd_financials FROM fact_financials;
+SELECT COUNT(*) AS qtd_dc FROM fact_datacenter_efficiency;
+
+
+/* =========================================================
+   3) VISUALIZAÇÃO DAS TABELAS BASE
+   ========================================================= */
+SELECT * FROM dim_fiscal_year ORDER BY fiscal_year;
+SELECT * FROM fact_water ORDER BY fiscal_year;
+SELECT * FROM fact_financials ORDER BY fiscal_year;
+SELECT * FROM fact_datacenter_efficiency ORDER BY fiscal_year;
+
+
+/* =========================================================
+   4) DISTINTOS DE ANO FISCAL
+   ========================================================= */
+SELECT DISTINCT fiscal_year FROM dim_fiscal_year ORDER BY fiscal_year;
+SELECT DISTINCT fiscal_year FROM fact_water ORDER BY fiscal_year;
+SELECT DISTINCT fiscal_year FROM fact_financials ORDER BY fiscal_year;
+SELECT DISTINCT fiscal_year FROM fact_datacenter_efficiency ORDER BY fiscal_year;
+
+
+/* =========================================================
+   5) VALIDAÇÃO DE JOIN ENTRE DIMENSÃO E FATOS
+   ========================================================= */
+SELECT
+    y.fiscal_year,
+    f.revenue_usd,
+    w.water_withdrawn_m3,
+    w.water_consumed_m3,
+    w.method_flag
+FROM dim_fiscal_year y
+LEFT JOIN fact_financials f
+  ON f.fiscal_year = y.fiscal_year
+LEFT JOIN fact_water w
+  ON w.fiscal_year = y.fiscal_year
+ORDER BY y.fiscal_year;
+
+
+/* =========================================================
+   6) VISUALIZAÇÃO DAS VIEWS
+   ========================================================= */
+SELECT * FROM vw_water_finance_kpis ORDER BY fiscal_year;
+SELECT * FROM vw_water_finance_dc_kpis ORDER BY fiscal_year;
+
+
+/* =========================================================
+   7) QUERY ANALÍTICA PRINCIPAL
+   ========================================================= */
+SELECT
+    fiscal_year,
+    revenue_usd,
+    water_withdrawn_m3,
+    water_consumed_m3,
+    method_flag,
+    withdrawn_per_revenue,
+    consumed_per_revenue,
+    withdrawn_m3_per_usd_billion,
+    consumed_m3_per_usd_billion,
+    cycle_consumption_rate,
+    yoy_revenue_growth,
+    yoy_withdrawn_growth,
+    yoy_consumed_growth,
+    wue_l_per_kwh
+FROM vw_water_finance_dc_kpis
+ORDER BY fiscal_year;
+
+
+/* =========================================================
+   8) CHECAGEM DE CONSISTÊNCIA DE ÁGUA
+   ========================================================= */
 SELECT *
 FROM fact_water
 WHERE water_consumed_m3 > water_withdrawn_m3;
 
--- 3) Série comparável (FY20–FY23)
+
+/* =========================================================
+   9) CHECAGEM DE RECEITA POSITIVA
+   ========================================================= */
 SELECT *
-FROM vw_water_finance_kpis
-WHERE method_flag = 'pre_FY24'
-ORDER BY fiscal_year;
+FROM fact_financials
+WHERE revenue_usd <= 0;
 
--- 4) FY24 separado (método atualizado)
-SELECT *
-FROM vw_water_finance_kpis
-WHERE method_flag = 'FY24_updated_method';
 
--- 5) Tendência de água
-SELECT fiscal_year, water_withdrawn_m3, water_consumed_m3
-FROM vw_water_finance_kpis
-ORDER BY fiscal_year;
-
--- 6) Intensidade hídrica (m³ por US$ 1B)
-SELECT fiscal_year, withdrawn_m3_per_usd_billion, consumed_m3_per_usd_billion
+/* =========================================================
+   10) ANÁLISE EXECUTIVA - INTENSIDADE HÍDRICA
+   ========================================================= */
+SELECT
+    fiscal_year,
+    withdrawn_m3_per_usd_billion,
+    consumed_m3_per_usd_billion
 FROM vw_water_finance_kpis
 ORDER BY fiscal_year;
 
--- 7) YoY comparativo (água vs receita)
-SELECT fiscal_year, yoy_revenue_growth, yoy_withdrawn_growth, yoy_consumed_growth
+
+/* =========================================================
+   11) ANÁLISE EXECUTIVA - CRESCIMENTO YOY
+   ========================================================= */
+SELECT
+    fiscal_year,
+    yoy_revenue_growth,
+    yoy_withdrawn_growth,
+    yoy_consumed_growth
 FROM vw_water_finance_kpis
 ORDER BY fiscal_year;
 
--- 8) Cycle rate (consumo/retirada)
-SELECT fiscal_year, cycle_consumption_rate
+
+/* =========================================================
+   12) ANÁLISE EXECUTIVA - TAXA DE CONSUMO DO CICLO
+   ========================================================= */
+SELECT
+    fiscal_year,
+    cycle_consumption_rate
 FROM vw_water_finance_kpis
 ORDER BY fiscal_year;
 
--- 9) Drivers operacionais (WUE)
-SELECT fiscal_year, wue_l_per_kwh, cycle_consumption_rate
+
+/* =========================================================
+   13) ANÁLISE EXECUTIVA - WUE
+   ========================================================= */
+SELECT
+    fiscal_year,
+    wue_l_per_kwh
+FROM vw_water_finance_dc_kpis
+ORDER BY fiscal_year;
+
+
+/* =========================================================
+   14) CONSULTA RESUMIDA PARA EXPORTAÇÃO / PYTHON / BI
+   ========================================================= */
+SELECT
+    fiscal_year,
+    revenue_usd,
+    water_withdrawn_m3,
+    water_consumed_m3,
+    withdrawn_m3_per_usd_billion,
+    consumed_m3_per_usd_billion,
+    cycle_consumption_rate,
+    yoy_revenue_growth,
+    yoy_withdrawn_growth,
+    yoy_consumed_growth,
+    wue_l_per_kwh
 FROM vw_water_finance_dc_kpis
 ORDER BY fiscal_year;

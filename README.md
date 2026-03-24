@@ -1,4 +1,6 @@
 # Eficiência hídrica e governança ESG em data centers: análise do uso de água da Microsoft (FY20–FY24)
+s# Eficiência hídrica e governança ESG em data centers: análise do uso de água da Microsoft (FY20–FY24)
+(Initial commit - Microsoft water ESG analysis project)
 
 Este projeto analisa a evolução do uso de água da Microsoft entre FY20 e FY24, conectando indicadores ESG corporativos a métricas de eficiência hídrica e geração de valor. A análise foi construída com SQL, Python e Power BI, com foco em retirada e consumo de água, intensidade hídrica por receita, comportamento Year over Year e um indicador operacional complementar de data center (WUE).
 
